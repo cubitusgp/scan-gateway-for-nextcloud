@@ -8,28 +8,31 @@ services:
     # │                   SETTINGS TO CONFIGURE                     │
     # └─────────────────────────────────────────────────────────────┘
     environment:
-      # SMB credentials (used by scanners to connect)
+      # Admin UI credentials
+      ADMIN_USER: "admin"
+      ADMIN_PASSWORD: "changeme"
+      ADMIN_SECRET: "change-this-random-secret"
+
+      # Polling interval in seconds
+      POLL_INTERVAL: "3"
+
+      # Initial SMB credentials (can be changed later in the admin UI)
       SMB_USER: "scanner"
       SMB_PASSWORD: "changeme"
 
-      # Polling interval in seconds (how often to check for new files)
-      POLL_INTERVAL: "3"
-
-      # Destinations format: smb_folder|webdav_url|webdav_user|webdav_password
-      # - smb_folder   : name of the SMB share (e.g. "office" → \\IP\office)
-      # - webdav_url   : full WebDAV URL of the destination folder
-      # - webdav_user  : WebDAV username
-      # - webdav_password : WebDAV password (use an app password for Nextcloud!)
-      #
-      # Multiple destinations: separate with a comma
-      # Example with Nextcloud:
-      #   webdav_url = https://nextcloud.example.com/remote.php/dav/files/USERNAME/Scans/Office/
+      # Initial destinations (can be managed later in the admin UI)
+      # Format: smb_folder|webdav_url|webdav_user|webdav_password
+      # Leave empty to configure everything from the admin UI
       DESTINATIONS: "office|https://nextcloud.example.com/remote.php/dav/files/admin/Scans/Office/|admin|app-password"
 
-    # ┌─────────────────────────────────────────────────────────────┐
-    # │  NETWORK — give the container its own IP on your LAN        │
-    # │  Avoids port 445 conflict with the host (e.g. TrueNAS SMB)  │
-    # └─────────────────────────────────────────────────────────────┘
+    volumes:
+      # Persistent config (survives container restarts)
+      - /mnt/StoRaid/scan-gateway/config:/config
+
+    ports:
+      # Admin UI — only needed if NOT using macvlan
+      - "4380:4380"
+
     networks:
       scan-gateway-net:
         ipv4_address: 192.168.1.250   # ← choose a free IP on your network

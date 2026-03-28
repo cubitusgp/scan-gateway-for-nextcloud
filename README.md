@@ -120,6 +120,17 @@ If TrueNAS already uses SMB on port 445, the macvlan approach gives the containe
 - Nextcloud AIO (Docker)
 - TrueNAS SCALE 24.10 (Electric Eel)
 
+## What's new
+- Web administration interface on port 4380
+- Add/edit/delete SMB shares without restarting
+- Persistent config stored in /config/config.json
+- Automatic Samba reload on every change
+- Login/password protection
+
+## Migration from v1
+Replace all files and rebuild the image. Add ADMIN_USER, ADMIN_PASSWORD 
+and ADMIN_SECRET to your docker-compose.yml.
+
 ## Contributing
 
 Pull requests welcome! Feel free to open an issue if you have tested with other scanner models or WebDAV servers.
